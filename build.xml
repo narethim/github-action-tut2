@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="CppApp" default="run" basedir=".">
+<project name="CppApp" default="testdbCpp2junit" basedir=".">
     <description>
         Jenkins Ant file for CppApp
     </description>
