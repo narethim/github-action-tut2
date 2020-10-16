@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="CppApp" default="testdbCpp2junit" basedir=".">
+    <description>
+        Jenkins Ant file for CppApp
+    </description>
+  <!-- set global properties for this build -->
+  <property name="make.cmd" value="/usr/bin/make"/>
+  <property name="build.native" value="./src"/>
+  <property name="build.test" value="./test_cppunit/src"/>
+  <property name="xsltproc.cmd" value="/usr/bin/xsltproc"/>
+
+  <target name="init">
+    <!-- Create the time stamp -->
+    <tstamp/>
+  </target>
+
+  <target name="compile" description="compile the source" >
+    <exec dir="${build.native}" executable="${make.cmd}" failonerror="true">
+    </exec>
+  </target>
+
+  <target name="compile-test" description="compile the source" depends="compile">
+    <exec dir="${build.test}" executable="${make.cmd}" failonerror="true">
+    </exec>
+  </target>
+
+  <target name="clean" description="clean up" >
+    <exec dir="${build.native}" executable="${make.cmd}" failonerror="false">
+      <arg value="clean"/>
+    </exec>
+    <exec dir="${build.test}" executable="${make.cmd}" failonerror="false">
+      <arg value="clean"/>
+    </exec>
+  </target>
+
+  <target name="run" description="Run application" depends="compile">
+    <exec dir="${build.native}" executable="./basic_math" failonerror="true">
+    </exec>
+  </target>
+
+  <target name="run-test" description="Run application" depends="compile-test">
+    <exec dir="${build.test}" executable="./testAll" failonerror="true">
+      <arg line="--gtest_output='xml:./testAll.xml'"/>
+    </exec>
+  </target>
+
+  <target name="testdbCpp2junit" 
+        description="Convert cppunit test results to junit test results" depends="run-test" >
+    <echo>Tests run from  directory: ${build.test}</echo>
+    <exec dir="${build.test}" executable="${xsltproc.cmd}" failonerror="true">
+      <arg value="-o"/>
+
+      <arg value="junitTestBasicMathResults.xml"/>
+      <arg value="cpp2junit.xslt"/>
+      <arg value="cppBasicMath_TestResults.xml"/>
+    </exec>
+  </target>
+
+</project>
+
